@@ -1,0 +1,32 @@
+DansGUI
+DansGUI Assumes that you have the following up:
+Squid and Dansguardian
+Optional PHP, and Apache2...if not install will try automaticly via apt-get 
+Install libapache2-mod-suphp
+
+run sudo ./install.sh from a terminal
+
+Once installed you have to change permisions of:
+ /etc/dansguardian/lists/exceptionsitelist
+and /etc/dansguardian/lists/exceptionurllist
+to allow www-data to read and write from themf
+
+USING chmod 755 and chgroup 755 www-data
+
+you will also need to add some stuff using visudo to allow PHP to restart dansguardian
+
+Add the following line after #Cmnd alias specification
+Cmnd_Alias TOOLS=/usr/bin/service dansguardian *
+
+Add the following line after root ALL=(ALL) ALL
+www-data ALL=NOPASSWD:TOOLS
+
+(www-data may be replaced by your apache user name)
+password.php holds  the password to access the default is default
+
+PROBLEMS:
+*Banned Regex cannot be skipped
+*Parameters are not passed in to URL for unblocking.
+
+Minor Fixes Needed:
+* Regex to determine if site or complete URL URL to URL list and Site to site list

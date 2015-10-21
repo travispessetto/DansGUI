@@ -1,0 +1,53 @@
+<?php
+//lets ask for a password
+include ("password.php");
+$pass = $_POST['pass'];
+$ref = $_GET['ref'];
+if($pass == ""){
+print "Password is required<br>";?>
+<form action="unblock.php?ref=
+<?php 
+print $ref;
+?>"
+ method="post">
+<input type="password" name="pass" />
+<input type="submit" value="SUBMIT" />
+</form>
+<?php
+die();
+}
+if(!($pass == $setpass)){
+print "INVALID PASSWORD<br>";
+print "Password is required<br>";?>
+<form action="unblock.php?ref=<?php echo $ref;?>" method="post">
+<input type="password" name="pass" />
+<input type="submit" value="SUBMIT" />
+</form>
+<?php
+die();
+}//end invalid password
+print "STR_REPLACE<br>";
+$addstr = str_replace("http://www.","",$ref);
+//if that don't work just replace the 
+$addstr = str_replace("http://","",$addstr);
+//if just a www
+$addstr = str_replace("www.","",$addstr);
+print $addstr."<br>";
+print "unblocking";
+$file = fopen("/etc/dansguardian/lists/exceptionsitelist",'a');
+fwrite($file,$addstr."\n");
+if (!$file){
+print "\n<br>COULD NOT OPEN FILE!!!!";
+die();
+}
+fclose($file);
+$file = fopen("/etc/dansguardian/lists/exceptionurllist",'a');
+fwrite($file,$addstr."\n");
+if (!$file){
+print "\n<br>COULD NOT OPEN FILE!!!!";
+die();
+}
+fclose($file);
+print "<a href=\"$ref\">CLICK HERE TO CONTINUE</a>";
+exec("/var/www/dansrestart.sh >dev/null 2>dev/null &");
+?>
